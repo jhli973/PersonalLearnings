@@ -48,7 +48,7 @@ class Model(object):
 
         self.model.summary()
      
-    def train(self, dataset, batch_size=20, nb_epoch=30, data_augmentation=True):
+    def train(self, dataset, batch_size=60, nb_epoch=30, data_augmentation=True):
         
         # let's train the model using SGD + momentum (how original).
         #sgd = SGD(lr=0.01, decay=1e-6, momentum=0.9, nesterov=True) #acc: 99.58%
