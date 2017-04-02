@@ -19,9 +19,9 @@ class Model(object):
 
     #FILE_PATH = r'C:\Users\dbsnail\ImageProject\model_sgd.h5'
 
-    def __init__(self):
+    def __init__(self,batch_size = 60):
         self.model = None
-        self.batch_size = 60
+        self.batch_size = batch_size
 
     def build_model(self, dataset, nb_classes=2):
         self.model = Sequential()
@@ -50,14 +50,15 @@ class Model(object):
 
         self.model.summary()
      
-    def train(self, dataset, nb_epoch=30, data_augmentation=True):
+    def train(self, dataset,optimizer, nb_epoch=30, data_augmentation=True):
         
         # let's train the model using different optimization methods.
         sgd = SGD(lr=0.01, decay=1e-6, momentum=0.9, nesterov=True) #acc: 99.58%
         adam = Adam(lr=0.001, beta_1=0.9, beta_2=0.999, epsilon=1e-08, decay=0.0) #acc: 99.63
         adamax = Adamax(lr=0.002, beta_1=0.9, beta_2=0.999, epsilon=1e-08, decay=0.0)
         self.model.compile(loss='categorical_crossentropy', ##'binary_crossentropy'
-                           optimizer=adamax, #
+                           #optimizer= adamax, #
+                           optimizer = optimizer,
                            metrics=['accuracy'])  #['precision']) #
         earlyStopping= callbacks.EarlyStopping(monitor='val_acc', patience=0, verbose=0, mode='auto')                   
                            
@@ -78,7 +79,7 @@ class Model(object):
                 featurewise_std_normalization=False,  # divide inputs by std of the dataset
                 samplewise_std_normalization=False,   # divide each input by its std
                 zca_whitening=False,                  # apply ZCA whitening
-                rotation_range=True,                  # randomly rotate images in the range (degrees, 0 to 180)
+                rotation_range=20,                    # randomly rotate images in the range (degrees, 0 to 180)
                 width_shift_range=0.,                 # randomly shift images horizontally (fraction of total width)
                 height_shift_range=0.,                # randomly shift images vertically (fraction of total height)
                 channel_shift_range=0.2,
@@ -117,4 +118,5 @@ class Model(object):
 
     def evaluate(self, dataset):
         score = self.model.evaluate(dataset.X_test, dataset.Y_test, batch_size = self.batch_size, verbose=0)
-        print("%s: %.2f%%" % (self.model.metrics_names[1], score[1] * 100))
+        #print("%s: %.2f%%" % (self.model.metrics_names[1], score[1] * 100))
+        return score[1] * 100
