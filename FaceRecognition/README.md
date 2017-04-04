@@ -19,6 +19,6 @@
 
 1. Imageexplore.ipynb
 2. ImageRawdataProcessing.ipynb
-3. DataProcessingModeling.ipynb
+3. DataModeling.ipynb
 4. PredictNewImages.ipynb
 
