@@ -15,7 +15,7 @@
 3. LoadSplitData.py: load pickle files and split data into train, validation and test data
 4. BuildModel.py: a model class for building a CNN model
 
-### Steps
+### Running Steps
 
 1. Imageexplore.ipynb
 2. ImageRawdataProcessing.ipynb
