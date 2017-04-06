@@ -17,7 +17,7 @@
 
 ### Running Steps
 
-1. Imageexplore.ipynb
+1. ImageExplore.ipynb
 2. ImageRawdataProcessing.ipynb
 3. DataModeling.ipynb
 4. PredictNewImages.ipynb
