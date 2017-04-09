@@ -26,12 +26,9 @@ class Dataset:
                                         
                     if abs_path.find('unauthorized') > 0:
                         self.unauthorized_list.append(image)
-                    elif abs_path.find('authorized') > 0:
-                        self.authorized_list.append(image)
                     else:
-                        print( "unvalid folder exists")
-
-        
+                        self.authorized_list.append(image)
+                            
         return self.authorized_list, self.unauthorized_list
 
     # read and resize
