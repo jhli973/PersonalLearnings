@@ -50,15 +50,15 @@ class Model(object):
 
         self.model.summary()
      
-    def train(self, dataset, metric, nb_epoch=30, data_augmentation=True):
+    def train(self, dataset, optimizer, nb_epoch=30, data_augmentation=True):
         
         # let's train the model using different optimization methods.
         sgd = SGD(lr=0.01, decay=1e-6, momentum=0.9, nesterov=True) #acc: 99.58%
         adam = Adam(lr=0.001, beta_1=0.9, beta_2=0.999, epsilon=1e-08, decay=0.0) #acc: 99.63
         adamax = Adamax(lr=0.002, beta_1=0.9, beta_2=0.999, epsilon=1e-08, decay=0.0)
         self.model.compile(loss='categorical_crossentropy', ##'binary_crossentropy'
-                           optimizer= adam, 
-                           metrics=[metric]) #
+                           optimizer= optimizer, 
+                           metrics=['accuracy','fbeta_score','precision']) #
         earlyStopping= callbacks.EarlyStopping(monitor='val_loss', patience=0, verbose=0, mode='auto')                   
                            
         if not data_augmentation:

@@ -14,11 +14,13 @@
 2. readimagedata.py: read image digital data as numpy arrays and save data as fickle files
 3. LoadSplitData.py: load pickle files and split data into train, validation and test data
 4. BuildModel.py: a model class for building a CNN model
+5. TuneModel.py: tune model with different evaluate metircs
 
 ### Running Steps
 
 1. ImageExplore.ipynb
 2. ImageRawdataProcessing.ipynb
 3. DataModeling.ipynb
-4. PredictNewImages.ipynb
+4. ModelTuning.ipynb
+5. PredictNewImages.ipynb
 
