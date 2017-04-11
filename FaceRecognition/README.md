@@ -22,5 +22,6 @@
 2. ImageRawdataProcessing.ipynb
 3. DataModeling.ipynb
 4. ModelTuning.ipynb
-5. PredictNewImages.ipynb
+5. PredictTestData.ipynb
+6. PredictNewImages.ipynb
 
