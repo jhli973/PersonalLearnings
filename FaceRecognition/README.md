@@ -13,15 +13,17 @@
 1. ImagefromVideo.py: capture image from videos
 2. readimagedata.py: read image digital data as numpy arrays and save data as fickle files
 3. LoadSplitData.py: load pickle files and split data into train, validation and test data
-4. BuildModel.py: a model class for building a CNN model
-5. TuneModel.py: tune model with different evaluate metircs
+4. Benchmark.py: a simple layer CNN model
+5. BuildModel.py: a model class for building a CNN model
+6. TuneModel.py: tune model with different evaluate metircs
 
 ### Running Steps
 
 1. ImageExplore.ipynb
 2. ImageRawdataProcessing.ipynb
-3. DataModeling.ipynb
-4. ModelTuning.ipynb
-5. PredictTestData.ipynb
-6. PredictNewImages.ipynb
+3. Benchmark.ipynb
+4. DataModeling.ipynb
+5. ModelTuning.ipynb
+6. PredictTestData.ipynb
+7. PredictNewImages.ipynb
 
