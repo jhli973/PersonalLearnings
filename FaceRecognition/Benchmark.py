@@ -14,6 +14,7 @@ from keras.models import load_model
 from keras import backend as K
 from keras import callbacks
 import numpy as np
+np.random.seed(0)
 
 class Model(object):
 
@@ -25,12 +26,10 @@ class Model(object):
 
     def build_model(self, dataset, nb_classes=2):
         self.model = Sequential()
-
         self.model.add(Convolution2D(32, 3, 3, border_mode='same', activation = 'relu', input_shape=dataset.X_train.shape[1:]))
-        self.model.add(Convolution2D(32, 3, 3, border_mode='same', activation = 'relu'))
         self.model.add(MaxPooling2D(pool_size=(2, 2)))
         self.model.add(Dropout(0.25))
-
+        """
         self.model.add(Convolution2D(64, 3, 3, border_mode='same', activation = 'relu'))
         self.model.add(Convolution2D(64, 3, 3, border_mode='same', activation = 'relu'))
         self.model.add(MaxPooling2D(pool_size=(2, 2)))
@@ -40,32 +39,33 @@ class Model(object):
         self.model.add(Convolution2D(96, 3, 3, border_mode='same', activation = 'relu'))
         self.model.add(MaxPooling2D(pool_size=(2, 2)))
         self.model.add(Dropout(0.25))        
-
+        """
         self.model.add(Flatten())
+        """
         self.model.add(Dense(960))
         self.model.add(Activation('relu'))
         self.model.add(Dropout(0.5))
+        """
         self.model.add(Dense(nb_classes))
         self.model.add(Activation('softmax'))
 
         self.model.summary()
      
-    def train(self, dataset, metric, nb_epoch=30, data_augmentation=True):
+    def train(self, dataset, nb_epoch=30, data_augmentation=True):
         
         # let's train the model using different optimization methods.
-        sgd = SGD(lr=0.01, decay=1e-6, momentum=0.9, nesterov=True) #acc: 99.58%
-        adam = Adam(lr=0.001, beta_1=0.9, beta_2=0.999, epsilon=1e-08, decay=0.0) #acc: 99.63
-        adamax = Adamax(lr=0.002, beta_1=0.9, beta_2=0.999, epsilon=1e-08, decay=0.0)
+        adam = Adam(lr=0.001, beta_1=0.9, beta_2=0.999, epsilon=1e-08, decay=0.0) 
+
         self.model.compile(loss='categorical_crossentropy', ##'binary_crossentropy'
                            optimizer= adam, 
-                           metrics=[metric]) #
-        earlyStopping= callbacks.EarlyStopping(monitor='val_loss', patience=0, verbose=0, mode='auto')                   
+                           metrics=['accuracy'])  #['precision']) #
+        earlyStopping= callbacks.EarlyStopping(monitor='val_acc', patience=0, verbose=0, mode='auto')                   
                            
         if not data_augmentation:
             print('Not using data augmentation.')
             self.model.fit(dataset.X_train, dataset.Y_train,
                            batch_size=self.batch_size,
-                           nb_epoch=nb_epoch, callbacks=earlyStopping, 
+                           nb_epoch=nb_epoch, callbacks=[earlyStopping], 
                            validation_data=(dataset.X_valid, dataset.Y_valid),
                            shuffle=True)
         else:
@@ -117,10 +117,5 @@ class Model(object):
 
     def evaluate(self, dataset):
         score = self.model.evaluate(dataset.X_test, dataset.Y_test, batch_size = self.batch_size, verbose=0)
-        #print("%s: %.4f" % (self.model.metrics_names[1], score[1] * 100))
-        #print("%s: %.4f" % (self.model.metrics_names[2], score[2] ))
-        #print("%s: %.4f" % (self.model.metrics_names[3], score[3] ))
-        if self.model.metrics_names[1] == 'acc':
-            return score[1] * 100 
-        elif self.model.metrics_names[1] == 'fbeta_score':
-            return score[1]
+        #print("%s: %.2f%%" % (self.model.metrics_names[1], score[1] * 100))
+        return score[1] * 100
