@@ -1,0 +1,106 @@
+-- You can run this query in www.sqlfiddle.com
+## 1. Create Tables
+CREATE TABLE Salesperson(
+ID INT,
+Name VARCHAR(20),
+Age int,
+Salary int);
+
+INSERT INTO Salesperson VALUES(1,'Abe', 61, 140000);
+INSERT INTO Salesperson VALUES(2,'Bob', 34, 44000);
+INSERT INTO Salesperson VALUES(5,'Chris', 34, 40000);
+INSERT INTO Salesperson VALUES(7,'Dan', 41, 52000);
+INSERT INTO Salesperson VALUES(8,'Ken', 57, 115000);
+INSERT INTO Salesperson VALUES(10,'Joe', 38, 38000);
+
+## 2. Create Tables
+CREATE TABLE Customer(
+ID INT,
+Name VARCHAR(20),
+City VARCHAR(20),
+`Industry Type` VARCHAR(2));
+
+INSERT INTO Customer VALUES(4,'Samsonic', 'pleasant', 'J');
+INSERT INTO Customer VALUES(6,'Panasung', 'oaktown', 'J');
+INSERT INTO Customer VALUES(7,'Samony', 'jackson', 'B');
+INSERT INTO Customer VALUES(9,'Orange', 'jackson', 'B');
+
+## 3. Create Tables
+CREATE TABLE Products(
+ID INT,
+Name VARCHAR(20));
+INSERT INTO Products VALUES(1,'Shoes');
+INSERT INTO Products VALUES(2,'Hat');
+INSERT INTO Products VALUES(3,'T-Shirt');
+
+## 4. Create Tables
+CREATE TABLE Orders(
+Number INT,
+order_date date,
+prod_id int,
+cust_id int,
+salesperson_id int,
+Amount int);
+
+INSERT INTO Orders VALUES(81,'1998/04/03',1, 4, 1, 99);
+INSERT INTO Orders VALUES(30,'1995/07/14',1, 9, 1, 460);
+INSERT INTO Orders VALUES(10,'1996/08/02',1, 4, 2, 540);
+INSERT INTO Orders VALUES(40,'1998/01/29',1, 7, 2, 2400);
+INSERT INTO Orders VALUES(71,'1998/01/06',1, 9, 7, 150);
+INSERT INTO Orders VALUES(70,'1998/05/06',1, 9, 7, 250);
+
+INSERT INTO Orders VALUES(20,'1999/01/03',2, 4, 5, 1340);
+INSERT INTO Orders VALUES(12,'1998/04/02',2, 6, 7, 237);
+INSERT INTO Orders VALUES(12,'1998/06/02',2, 9, 7, 430);
+INSERT INTO Orders VALUES(60,'1998/03/02',2, 6, 8, 720);
+INSERT INTO Orders VALUES(20,'1999/01/03',2, 4, 8, 1800);
+
+INSERT INTO Orders VALUES(80,'1998/06/06',3, 7, 5, 179);
+INSERT INTO Orders VALUES(80,'1998/03/06',3, 6, 5, 379);
+INSERT INTO Orders VALUES(50,'1998/03/03',3, 4, 7, 500);
+INSERT INTO Orders VALUES(50,'1998/02/03',3, 6, 7, 600);
+INSERT INTO Orders VALUES(80,'1998/06/06',3, 7, 8, 329);
+
+## return maximal sale amount for each salesperson
+SELECT salesperson_id, Amount
+FROM (
+  SELECT salesperson_id, Amount 
+  FROM orders 
+  order by salesperson_id, Amount DESC) x
+group by salesperson_id
+
+## return maximal sale amount for each product and each salesperson
+SELECT prod_id,salesperson_id, Amount
+FROM 
+(SELECT prod_id, Amount,salesperson_id FROM orders order by Amount DESC) x
+Group BY prod_id, salesperson_id
+
+## return top 2 maximal sale amount for each product and each salesperson
+SELECT prod_id,salesperson_id, Amount
+FROM 
+(SELECT prod_id, Amount,salesperson_id ,
+   @sale_rank :=IF(@prod_id = prod_id and @salesperson_id = salesperson_id, @sale_rank + 1, 1) AS sale_rank,
+   @prod_id := prod_id,
+   @salesperson_id := salesperson_id
+ FROM Orders order by prod_id, salesperson_id, Amount DESC) x
+WHERE sale_rank <= 2
+Order BY prod_id,salesperson_id, Amount
+--
+SELECT salesperson_id, Amount
+FROM 
+(SELECT salesperson_id, Amount, 
+   @sale_rank:=IF(@salesperson_id = salesperson_id, @sale_rank + 1, 1) AS sale_rank,
+   @salesperson_id:= salesperson_id
+ FROM Orders 
+ order by salesperson_id, Amount DESC) x
+ WHERE sale_rank <= 2
+ ORDER BY salesperson_id, Amount
+
+-- Generate rowNumber
+SELECT @sale_rank:= @sale_rank+1 row_Num,
+       x.* 
+FROM
+  (SELECT @sale_rank:= 0 ) sale_rank,
+  (SELECT salesperson_id, Amount
+   FROM Orders
+   ORDER BY salesperson_id, Amount ) x
